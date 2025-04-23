@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ミニゲーム</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+      #game-area {
+        margin: 20px auto;
+        width: 300px;
+        height: 300px;
+        border: 2px solid #000;
+        position: relative;
+        overflow: hidden;
+      }
+      .target {
+        width: 30px;
+        height: 30px;
+        background-color: red;
+        position: absolute;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>クリックしてターゲットを捕まえよう！</h1>
+    <p>制限時間: <span id="time">10</span> 秒</p>
+    <p>スコア: <span id="score">0</span></p>
+    <div id="game-area">
+      <div class="target" id="target"></div>
+    </div>
+    <button id="start-btn">スタート</button>
+
+    <script>
+      const target = document.getElementById('target');
+      const gameArea = document.getElementById('game-area');
+      const scoreDisplay = document.getElementById('score');
+      const timeDisplay = document.getElementById('time');
+      const startBtn = document.getElementById('start-btn');
+
+      let score = 0;
+      let time = 10;
+      let timer;
+      let gameActive = false;
+
+      function moveTarget() {
+        const areaWidth = gameArea.clientWidth;
+        const areaHeight = gameArea.clientHeight;
+        const targetSize = target.offsetWidth;
+
+        const x = Math.random() * (areaWidth - targetSize);
+        const y = Math.random() * (areaHeight - targetSize);
+
+        target.style.left = `${x}px`;
+        target.style.top = `${y}px`;
+      }
+
+      target.addEventListener('click', () => {
+        if (gameActive) {
+          score++;
+          scoreDisplay.textContent = score;
+          moveTarget();
+        }
+      });
+
+      startBtn.addEventListener('click', () => {
+        if (gameActive) return;
+
+        score = 0;
+        time = 10;
+        scoreDisplay.textContent = score;
+        timeDisplay.textContent = time;
+        gameActive = true;
+        moveTarget();
+
+        timer = setInterval(() => {
+          time--;
+          timeDisplay.textContent = time;
+
+          if (time <= 0) {
+            clearInterval(timer);
+            gameActive = false;
+            alert(`ゲーム終了！スコア: ${score}`);
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
